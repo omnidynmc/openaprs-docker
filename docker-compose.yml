@@ -6,6 +6,9 @@ services:
     volumes:
       - ./data/openstomp/etc:/root/openstomp/etc
       - ./data/openstomp/logs:/root/openstomp/logs
+      - ./data/aprsinject/etc:/root/aprsinject/etc
+      - ./data/aprsinject/logs:/root/aprsinject/logs
+      - ./data/aprsfeed/etc:/root/aprsfeed/etc
       - ./data/aprsfeed/logs:/root/aprsfeed/logs
       - ./data/aprsfeed/bursts:/root/aprsfeed/bursts
     depends_on:
