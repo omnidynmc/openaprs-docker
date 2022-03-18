@@ -9,13 +9,15 @@ LABEL description="Docker image for OpenAPRS system."
 # Disable Prompt During Packages Installation
 ARG DEBIAN_FRONTEND=noninteractive
 
+ADD ./buildworld.sh /root/buildworld.sh
+
 # Update Ubuntu Software repository
 RUN apt-get update
 
 # Install nginx, php-fpm and supervisord from ubuntu repository
 RUN apt-get install -y nginx php-fpm supervisor git automake autotools-dev autoconf libtool libc-bin libc6 libc6-dev libcxxtools-dev libossp-uuid-dev libreadline-dev libc++-dev binutils gcc g++ \
                        zlib1g zlib1g-dev libpthread-stubs0-dev make pkg-config libmemcached-dev memcached mysql-server mysql-client libmysqlclient-dev libmysql++ mosquitto mosquitto-clients \
-                       cmake cmake-gui cmake-curses-gui libssl-dev && \
+                       cmake cmake-gui cmake-curses-gui libssl-dev logrotate cron && \
     rm -rf /var/lib/apt/lists/* && \
     apt clean
 
@@ -39,59 +41,18 @@ RUN \
 RUN \
     cd /root && \
     git clone https://github.com/omnidynmc/openframe.git && \
-    cd openframe && \
-    ./autogen.sh && \
-    ./configure && \
-    make install
-
-RUN \
-    cd /root && \
-    git clone https://github.com/omnidynmc/openstats.git && \
-    cd openstats && \
-    ./autogen.sh && \
-    ./configure && \
-    make install
-
-RUN \
-    cd /root && \
-    git clone https://github.com/omnidynmc/stompclient.git && \
-    cd stompclient && \
-    ./autogen.sh && \
-    ./configure && \
-    make install
-
-RUN \
-    cd /root && \
-    git clone https://github.com/omnidynmc/opensat.git && \
-    cd opensat && \
-    ./autogen.sh && \
-    ./configure && \
-    make install
-
-RUN \
-    cd /root && \
-    git clone https://github.com/omnidynmc/aprsfeed.git && \
-    cd aprsfeed && \
-    ./autogen.sh && \
-    ./configure && \
-    make
-
-RUN \
-    cd /root && \
     git clone https://github.com/omnidynmc/openstomp.git && \
-    cd openstomp && \
-    ./autogen.sh && \
-    ./configure && \
-    make
-
-
-RUN \
-    cd /root && \
+    git clone https://github.com/omnidynmc/stompclient.git && \
+    git clone https://github.com/omnidynmc/opensat.git && \
+    git clone https://github.com/omnidynmc/openstats.git && \
+    git clone https://github.com/omnidynmc/aprsfeed.git && \
+    git clone https://github.com/omnidynmc/aprsinject.git && \
+    git clone https://github.com/omnidynmc/aprscreate.git && \
     git clone https://github.com/omnidynmc/openaprs.git && \
-    cd openaprs && \
-    ./autogen.sh && \
-    ./configure && \
-    make
+    git clone https://github.com/omnidynmc/apnspusher.git && \
+    git clone https://github.com/omnidynmc/apns.git && \
+    git clone https://github.com/omnidynmc/aprs.git && \
+    ./buildworld.sh
 
 # Define the ENV variable
 ENV nginx_vhost /etc/nginx/sites-available/default
@@ -106,6 +67,12 @@ RUN sed -i -e 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g' ${php_conf} && \
     
 # Copy supervisor configuration
 COPY supervisord.conf ${supervisor_conf}
+
+# Copy crontab configuration
+COPY config/crontab/cron.daily /etc/cron.daily
+
+# Copy logrotate configuration
+COPY config/logrotate/logrotate.d /etc/logrotate.d
 
 RUN mkdir -p /run/php && \
     chown -R www-data:www-data /var/www/html && \
