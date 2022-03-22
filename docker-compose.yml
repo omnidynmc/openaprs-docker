@@ -1,8 +1,12 @@
 version: '3.4'
 
 services:
+  memcached:
+    image: 'bitnami/memcached:latest'
   openaprs:
     build: .
+    env_file:
+      - env
     volumes:
       - ./data/openstomp/etc:/root/openstomp/etc
       - ./data/openstomp/logs:/root/openstomp/logs
@@ -13,6 +17,16 @@ services:
       - ./data/aprsfeed/bursts:/root/aprsfeed/bursts
     depends_on:
       - db
+      - memcached
+  phpmyadmin:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8004:80
+    environment:
+      - PMA_ARBITRARY=1
+    env_file:
+      - env
   db:
     # We use a mariadb image which supports both amd64 & arm64 architecture
     image: mariadb:10.6.4-focal
@@ -21,15 +35,15 @@ services:
     command: '--default-authentication-plugin=mysql_native_password'
     restart: always
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      test: ["CMD-SHELL", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent", "--password=$$MYSQL_ROOT_PASSWORD"]
       interval: 3s
       retries: 5
       start_period: 30s
     volumes:
-      - db-data:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=aprs
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+      - ./data/database:/var/lib/mysql
+      - ./data/database-init:/docker-entrypoint-initdb.d
+    env_file:
+      - env
     expose:
       - 3306
 #  proxy:

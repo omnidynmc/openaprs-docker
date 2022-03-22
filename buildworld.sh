@@ -14,7 +14,7 @@ do
   echo "done."
 done
 
-build_projects=( openaprs openstomp aprsfeed aprsinject aprscreate apnspusher )
+build_projects=( openaprs openstomp aprsfeed aprsinject aprscreate apnspusher aprspruner )
 
 for i in "${build_projects[@]}"
 do
