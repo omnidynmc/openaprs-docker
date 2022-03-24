@@ -12,6 +12,8 @@ services:
       - ./data/openstomp/logs:/root/openstomp/logs
       - ./data/aprsinject/etc:/root/aprsinject/etc
       - ./data/aprsinject/logs:/root/aprsinject/logs
+      - ./data/aprspruner/etc:/root/aprspruner/etc
+      - ./data/aprspruner/logs:/root/aprspruner/logs
       - ./data/aprsfeed/etc:/root/aprsfeed/etc
       - ./data/aprsfeed/logs:/root/aprsfeed/logs
       - ./data/aprsfeed/bursts:/root/aprsfeed/bursts
@@ -54,3 +56,7 @@ services:
 #      - backend
 volumes:
   db-data:
+networks:
+  default:
+    external:
+      name: openaprs-net

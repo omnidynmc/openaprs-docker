@@ -50,7 +50,7 @@ RUN \
     git clone https://github.com/omnidynmc/aprscreate.git && \
     git clone https://github.com/omnidynmc/openaprs.git && \
     git clone https://github.com/omnidynmc/apnspusher.git && \
-    git clone https://github.com/omnidynmc/apnspruner.git && \
+    git clone https://github.com/omnidynmc/aprspruner.git && \
     git clone https://github.com/omnidynmc/apns.git && \
     git clone https://github.com/omnidynmc/aprs.git && \
     ./buildworld.sh
