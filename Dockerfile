@@ -1,5 +1,7 @@
+ARGS OPENAPRS_ENVIRONMENT
+
 # Download base image ubuntu 20.04
-FROM ubuntu:20.04 as base
+FROM ubuntu:20.04 AS base
 
 # LABEL about the custom image
 LABEL maintainer="gcarter@openaprs.net"
@@ -75,7 +77,7 @@ EXPOSE 80 443
 ## Production                                                                 ##
 ################################################################################ 
 
-FROM base as openaprs-prod
+FROM base AS openaprs-prod
 
 RUN rm -rf /var/lib/apt/lists/* && \
     apt clean
@@ -101,7 +103,7 @@ RUN \
 ## Debug                                                                      ##
 ################################################################################ 
 
-FROM base as openaprs-debug
+FROM base AS openaprs-debug
 
 ADD ./rootssh/id_rsa /root/.ssh/id_rsa
 
@@ -135,3 +137,5 @@ RUN \
     git clone git@github.com:omnidynmc/aprs.git && \
     git clone git@github.com:omnidynmc/aprspruner.git && \
     ./buildworld.sh
+
+FROM openaprs-${OPENAPRS_ENVIRONMENT} AS final
