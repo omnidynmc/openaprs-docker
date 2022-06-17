@@ -3,8 +3,14 @@ version: '3.4'
 services:
   memcached:
     image: 'bitnami/memcached:latest'
+    restart: always
+    networks:
+      - openaprs-net
   openaprs:
     build: .
+    restart: always
+    networks:
+      - openaprs-net
     env_file:
       - env
     volumes:
@@ -18,36 +24,7 @@ services:
       - ./data/aprsfeed/logs:/root/aprsfeed/logs
       - ./data/aprsfeed/bursts:/root/aprsfeed/bursts
     depends_on:
-      - db
       - memcached
-  phpmyadmin:
-    image: phpmyadmin
-    restart: always
-    ports:
-      - 8004:80
-    environment:
-      - PMA_ARBITRARY=1
-    env_file:
-      - env
-  db:
-    # We use a mariadb image which supports both amd64 & arm64 architecture
-    image: mariadb:10.6.4-focal
-    # If you really want to use MySQL, uncomment the following line
-    #image: mysql:8.0.27
-    command: '--default-authentication-plugin=mysql_native_password'
-    restart: always
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent", "--password=$$MYSQL_ROOT_PASSWORD"]
-      interval: 3s
-      retries: 5
-      start_period: 30s
-    volumes:
-      - ./data/database:/var/lib/mysql
-      - ./data/database-init:/docker-entrypoint-initdb.d
-    env_file:
-      - env
-    expose:
-      - 3306
 #  proxy:
 #    build: proxy
 #    ports:
@@ -57,6 +34,5 @@ services:
 volumes:
   db-data:
 networks:
-  default:
-    external:
-      name: openaprs-net
+  openaprs-net:
+    external: true
