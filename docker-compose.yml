@@ -7,9 +7,10 @@ services:
     networks:
       - openaprs-net
   openaprs:
-    build: .
-    arg:
-      - OPENAPRS_ENVIRONMENT=prod
+    build:
+      context: .
+      args:
+        - OPENAPRS_ENVIRONMENT=prod
     restart: always
     platform: linux/amd64
     networks:
