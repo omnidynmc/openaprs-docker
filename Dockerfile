@@ -133,4 +133,5 @@ RUN \
     git clone git@github.com:omnidynmc/apnspusher.git && \
     git clone git@github.com:omnidynmc/apns.git && \
     git clone git@github.com:omnidynmc/aprs.git && \
-    git clone git@github.com:omnidynmc/aprspruner.git
+    git clone git@github.com:omnidynmc/aprspruner.git && \
+    ./buildworld.sh
