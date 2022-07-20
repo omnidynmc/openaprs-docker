@@ -1,4 +1,4 @@
-ARGS OPENAPRS_ENVIRONMENT
+ARG OPENAPRS_ENVIRONMENT
 
 # Download base image ubuntu 20.04
 FROM ubuntu:20.04 AS base

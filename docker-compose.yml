@@ -12,7 +12,6 @@ services:
       args:
         - OPENAPRS_ENVIRONMENT=prod
     restart: always
-    platform: linux/amd64
     networks:
       - openaprs-net
     env_file:
